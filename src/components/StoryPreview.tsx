@@ -1,10 +1,12 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Character, StoryEnvironment, StoryTheme } from "../data/storyData";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Book, RefreshCw, Download } from "lucide-react";
+import { ArrowLeft, Book, RefreshCw, Download, Image } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useApiKey } from "@/context/ApiKeyContext";
+import { generateImage } from "@/services/openai";
+import { toast } from "sonner";
 
 interface StoryPreviewProps {
   environment: StoryEnvironment;
@@ -21,6 +23,7 @@ interface StoryContent {
     description: string;
     dialogue: string[];
     imagePrompt: string;
+    imageUrl?: string;
   }[];
   conclusion: string;
 }
@@ -29,6 +32,8 @@ const StoryPreview = ({ environment, theme, characters, onBack, onRegenerate }: 
   const [storyContent, setStoryContent] = useState<StoryContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentScene, setCurrentScene] = useState(0);
+  const [generatingImage, setGeneratingImage] = useState(false);
+  const { apiKey } = useApiKey();
 
   // Mock story generation
   useEffect(() => {
@@ -156,6 +161,45 @@ const StoryPreview = ({ environment, theme, characters, onBack, onRegenerate }: 
     }
   };
 
+  const handleGenerateImage = async () => {
+    if (!storyContent || !apiKey) return;
+    
+    const currentSceneData = storyContent.scenes[currentScene];
+    if (!currentSceneData) return;
+    
+    setGeneratingImage(true);
+    toast.info("Generating image...");
+    
+    try {
+      const imageUrl = await generateImage({
+        prompt: currentSceneData.imagePrompt,
+        apiKey,
+        size: "512x512"
+      });
+      
+      if (imageUrl) {
+        const updatedScenes = storyContent.scenes.map((scene, index) => {
+          if (index === currentScene) {
+            return { ...scene, imageUrl };
+          }
+          return scene;
+        });
+        
+        setStoryContent({
+          ...storyContent,
+          scenes: updatedScenes
+        });
+        
+        toast.success("Image generated successfully!");
+      }
+    } catch (error) {
+      console.error("Error generating image:", error);
+      toast.error("Failed to generate image. Please try again.");
+    } finally {
+      setGeneratingImage(false);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -235,9 +279,27 @@ const StoryPreview = ({ environment, theme, characters, onBack, onRegenerate }: 
                   <p className="text-muted-foreground text-sm">
                     {storyContent.scenes[currentScene].imagePrompt}
                   </p>
-                  <div className="mt-4 aspect-video bg-muted rounded-md flex items-center justify-center">
-                    <Book className="h-16 w-16 text-muted-foreground/50" />
-                    <p className="ml-2 text-muted-foreground">Story illustration would appear here</p>
+                  <div className="mt-4 aspect-video bg-muted rounded-md flex items-center justify-center overflow-hidden">
+                    {storyContent.scenes[currentScene].imageUrl ? (
+                      <img 
+                        src={storyContent.scenes[currentScene].imageUrl} 
+                        alt={`Scene ${currentScene + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center">
+                        <Book className="h-16 w-16 text-muted-foreground/50 mb-2" />
+                        <p className="text-muted-foreground mb-3">No illustration yet</p>
+                        <Button 
+                          onClick={handleGenerateImage}
+                          disabled={generatingImage}
+                          className="bg-storyworld-space hover:bg-storyworld-space/90 text-white"
+                        >
+                          <Image className={`mr-2 h-4 w-4 ${generatingImage ? "animate-spin" : ""}`} />
+                          {generatingImage ? "Generating..." : "Generate Image"}
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>

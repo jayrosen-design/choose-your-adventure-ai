@@ -6,17 +6,20 @@ import EnvironmentSelector from "@/components/EnvironmentSelector";
 import ThemeSelector from "@/components/ThemeSelector";
 import CharacterCreator from "@/components/CharacterCreator";
 import StoryPreview from "@/components/StoryPreview";
+import ApiKeyInput from "@/components/ApiKeyInput";
+import { ApiKeyProvider, useApiKey } from "@/context/ApiKeyContext";
 import { environments, themes, Character, StoryDetails, StoryEnvironment, StoryTheme } from "@/data/storyData";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 
-const Index = () => {
+const StoryCreator = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [storyDetails, setStoryDetails] = useState<StoryDetails>({
     environment: null,
     theme: null,
     characters: [],
   });
+  const { isApiKeySet } = useApiKey();
 
   const handleEnvironmentSelect = (environment: StoryEnvironment) => {
     setStoryDetails({ ...storyDetails, environment });
@@ -56,8 +59,15 @@ const Index = () => {
   };
 
   const renderStep = () => {
+    // If API key is not set, show the API key input first
+    if (!isApiKeySet) {
+      return <ApiKeyInput onContinue={() => setCurrentStep(2)} />;
+    }
+
     switch (currentStep) {
       case 1:
+        return <ApiKeyInput onContinue={() => setCurrentStep(2)} />;
+      case 2:
         return (
           <EnvironmentSelector
             environments={environments}
@@ -65,7 +75,7 @@ const Index = () => {
             onContinue={goToNextStep}
           />
         );
-      case 2:
+      case 3:
         return (
           <ThemeSelector
             themes={themes}
@@ -74,7 +84,7 @@ const Index = () => {
             onBack={goToPreviousStep}
           />
         );
-      case 3:
+      case 4:
         return (
           <CharacterCreator
             onUpdate={handleCharactersUpdate}
@@ -82,7 +92,7 @@ const Index = () => {
             onBack={goToPreviousStep}
           />
         );
-      case 4:
+      case 5:
         if (storyDetails.environment && storyDetails.theme) {
           const validCharacters = storyDetails.characters.filter(
             (char) => char.name && char.personality && char.traits.length > 0
@@ -106,9 +116,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background bg-hero-pattern py-8 px-4 overflow-hidden">
-      {currentStep < 5 ? (
+      {currentStep < 6 ? (
         <>
-          <StoryHeader currentStep={currentStep} totalSteps={4} />
+          <StoryHeader currentStep={currentStep} totalSteps={5} />
           <AnimatePresence mode="wait">
             {renderStep()}
           </AnimatePresence>
@@ -128,6 +138,14 @@ const Index = () => {
         </div>
       )}
     </div>
+  );
+};
+
+const Index = () => {
+  return (
+    <ApiKeyProvider>
+      <StoryCreator />
+    </ApiKeyProvider>
   );
 };
 
