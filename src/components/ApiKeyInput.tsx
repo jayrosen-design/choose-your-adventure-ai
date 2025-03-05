@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useApiKey } from "@/context/ApiKeyContext";
-import { KeyRound, ArrowRight, AlertCircle } from "lucide-react";
+import { KeyRound, ArrowRight, AlertCircle, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ApiKeyInputProps {
@@ -18,7 +18,13 @@ const ApiKeyInput = ({ onContinue }: ApiKeyInputProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputKey.trim().length > 0) {
-      setApiKey(inputKey.trim());
+      // Remove any leading "hf_" if the user already included it
+      // (Since we add it in the openai.ts file)
+      const cleanKey = inputKey.trim().startsWith("hf_") 
+        ? inputKey.trim() 
+        : inputKey.trim();
+      
+      setApiKey(cleanKey);
       onContinue();
     }
   };
@@ -43,6 +49,13 @@ const ApiKeyInput = ({ onContinue }: ApiKeyInputProps) => {
           <AlertCircle className="h-4 w-4 text-yellow-600" />
           <AlertDescription className="text-yellow-600">
             Your token is stored locally in your browser and is never sent to our servers.
+          </AlertDescription>
+        </Alert>
+
+        <Alert className="mb-6 bg-blue-50 border-blue-200">
+          <Info className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-600">
+            The token should start with "hf_". If you don't include it, we'll add it automatically.
           </AlertDescription>
         </Alert>
 

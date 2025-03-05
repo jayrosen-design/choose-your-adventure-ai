@@ -18,6 +18,11 @@ export const generateImage = async ({
     return null;
   }
 
+  // Ensure the API key has the correct prefix
+  const formattedApiKey = apiKey.startsWith("hf_") 
+    ? apiKey 
+    : `hf_${apiKey}` as const;
+
   try {
     const storybook_style = "Illustrations for a Children's book. Colorful, whimsical, child-friendly artwork with simple compositions and clear subjects.";
     
@@ -29,7 +34,7 @@ export const generateImage = async ({
     
     // Connect to the HuggingFace model
     const client = await Client.connect("black-forest-labs/FLUX.1-dev", {
-      hf_token: apiKey
+      hf_token: formattedApiKey
     });
     
     // Make prediction with the model
