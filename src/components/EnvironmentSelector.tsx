@@ -43,6 +43,23 @@ const EnvironmentSelector = ({ environments, onSelect, onContinue }: Environment
     }
   };
 
+  const getIconBgColor = (environmentId: string) => {
+    switch (environmentId) {
+      case "fantasy":
+        return "bg-purple-400";
+      case "space":
+        return "bg-blue-500";
+      case "forest":
+        return "bg-green-500";
+      case "underwater":
+        return "bg-sky-400";
+      case "mystery":
+        return "bg-violet-500";
+      default:
+        return "bg-primary";
+    }
+  };
+
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -100,7 +117,7 @@ const EnvironmentSelector = ({ environments, onSelect, onContinue }: Environment
             } ${environment.bgClass}`}
             onClick={() => handleSelect(environment)}
           >
-            <div className={`flex justify-center items-center w-16 h-16 rounded-full bg-${environment.color} text-white mb-4 glass`}>
+            <div className={`flex justify-center items-center w-16 h-16 rounded-full ${getIconBgColor(environment.id)} text-white mb-4 glass`}>
               {getIcon(environment.icon)}
             </div>
             <h3 className="text-xl font-bold mb-2">{environment.name}</h3>
