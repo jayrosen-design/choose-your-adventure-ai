@@ -170,7 +170,7 @@ const StoryPreview = ({ environment, theme, characters, onBack, onRegenerate }: 
       const imageUrl = await generateImage({
         prompt: currentSceneData.imagePrompt,
         apiKey,
-        size: "512x512"
+        size: "1024x1024"
       });
       
       if (imageUrl) {

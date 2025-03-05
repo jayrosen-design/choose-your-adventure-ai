@@ -6,7 +6,7 @@ const OPENAI_API_URL = "https://api.openai.com/v1/images/generations";
 interface GenerateImageOptions {
   prompt: string;
   n?: number;
-  size?: "256x256" | "512x512" | "1024x1024";
+  size?: "1024x1024" | "1792x1024" | "1024x1792";
   apiKey: string;
 }
 
@@ -22,7 +22,7 @@ interface OpenAIResponse {
 export const generateImage = async ({
   prompt,
   n = 1,
-  size = "512x512",
+  size = "1024x1024",
   apiKey
 }: GenerateImageOptions): Promise<string | null> => {
   if (!apiKey) {
@@ -31,9 +31,9 @@ export const generateImage = async ({
   }
 
   try {
-    const storybook_style = "Imagine you are creating illustrations for a classic children's storybook. Your artwork should evoke a whimsical, charming, and playful aesthetic tailored for young readers (grades 3–5). Use soft pastel colors, clear and gentle outlines, and a hand-drawn, storybook style that feels both engaging and nurturing. Ensure that every image is lighthearted and free of any dark, violent, or overly complex elements. The illustrations must always convey warmth, imagination, and simplicity, inviting young audiences into a magical, safe world.";
+    const storybook_style = "Illustrations for a Children's book. Colorful, whimsical, child-friendly artwork with simple compositions and clear subjects.";
     
-    const enhancedPrompt = `${storybook_style} Based on this style, illustrate: ${prompt}`;
+    const enhancedPrompt = `${storybook_style} ${prompt}`;
 
     const response = await fetch(OPENAI_API_URL, {
       method: "POST",
@@ -44,7 +44,8 @@ export const generateImage = async ({
       body: JSON.stringify({
         prompt: enhancedPrompt,
         n,
-        size
+        size,
+        model: "dall-e-3"
       })
     });
 
