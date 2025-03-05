@@ -35,11 +35,9 @@ const StoryPreview = ({ environment, theme, characters, onBack, onRegenerate }: 
   const [generatingImage, setGeneratingImage] = useState(false);
   const { apiKey } = useApiKey();
 
-  // Mock story generation
   useEffect(() => {
     setLoading(true);
     
-    // Simulate story generation delay
     const timer = setTimeout(() => {
       const mockStory = generateMockStory(environment, theme, characters);
       setStoryContent(mockStory);
@@ -49,7 +47,6 @@ const StoryPreview = ({ environment, theme, characters, onBack, onRegenerate }: 
     return () => clearTimeout(timer);
   }, [environment, theme, characters]);
 
-  // Mock story generation function - in a real app, this would be an API call to an AI service
   const generateMockStory = (
     environment: StoryEnvironment, 
     theme: StoryTheme, 
@@ -113,7 +110,6 @@ const StoryPreview = ({ environment, theme, characters, onBack, onRegenerate }: 
     setLoading(true);
     onRegenerate();
     
-    // Simulate regeneration
     setTimeout(() => {
       const newStory = generateMockStory(environment, theme, characters);
       setStoryContent(newStory);

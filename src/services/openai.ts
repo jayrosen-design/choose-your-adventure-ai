@@ -31,6 +31,10 @@ export const generateImage = async ({
   }
 
   try {
+    const storybook_style = "Imagine you are creating illustrations for a classic children's storybook. Your artwork should evoke a whimsical, charming, and playful aesthetic tailored for young readers (grades 3–5). Use soft pastel colors, clear and gentle outlines, and a hand-drawn, storybook style that feels both engaging and nurturing. Ensure that every image is lighthearted and free of any dark, violent, or overly complex elements. The illustrations must always convey warmth, imagination, and simplicity, inviting young audiences into a magical, safe world.";
+    
+    const enhancedPrompt = `${storybook_style} Based on this style, illustrate: ${prompt}`;
+
     const response = await fetch(OPENAI_API_URL, {
       method: "POST",
       headers: {
@@ -38,7 +42,7 @@ export const generateImage = async ({
         Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        prompt: `A child-friendly, colorful, cartoonish illustration of ${prompt}. The style should be suitable for children ages 8-11, with no scary, violent, or adult content.`,
+        prompt: enhancedPrompt,
         n,
         size
       })
