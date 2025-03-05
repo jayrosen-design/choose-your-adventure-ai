@@ -164,7 +164,7 @@ const StoryPreview = ({ environment, theme, characters, onBack, onRegenerate }: 
     if (!currentSceneData) return;
     
     setGeneratingImage(true);
-    toast.info("Generating image...");
+    toast.info("Generating image with FLUX.1-dev...");
     
     try {
       const imageUrl = await generateImage({
