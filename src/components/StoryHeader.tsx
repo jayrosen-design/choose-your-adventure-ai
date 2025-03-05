@@ -16,10 +16,10 @@ const StoryHeader = ({ currentStep, totalSteps }: StoryHeaderProps) => {
         className="text-center mb-6"
       >
         <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-storyworld-space">
-          StoryVenturer
+          Choose Your Adventure AI
         </h1>
         <p className="mt-2 text-lg text-muted-foreground">
-          Create amazing stories for your adventure!
+          Create amazing children's stories with illustrations
         </p>
       </motion.div>
       
