@@ -1,69 +1,64 @@
-# Welcome to your Lovable project
+# Choose Your Adventure AI
 
-## Project info
+Create engaging, kid-friendly adventure stories with AI-generated text and illustrations. This web application uses the OpenAI API—with DALL·E 3—to generate both imaginative narratives and storybook-style images that bring your custom characters, themes, and worlds to life!
 
-**URL**: https://lovable.dev/projects/b7682685-7c63-4cd2-82e1-31ce5d215810
+---
 
-## How can I edit this code?
+## Table of Contents
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Screenshots](#screenshots)
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## Overview
+**Choose Your Adventure AI** is a prototype designed for young audiences (grades 3–5) that allows users to:
+- **Select a Story World:** Choose from 5 different story environments (e.g., Fantasy Kingdom, Outer Space).
+- **Pick a Story Theme:** Select one of 5 story arcs (e.g., Friendship, Courage).
+- **Create Characters:** Define up to 5 unique characters with names and positive personality traits.
+- **Generate Scenes:** Produce an engaging narrative with a clear beginning, conflict, and resolution.
+- **AI-Generated Illustrations:** Use DALL·E 3 to create child-friendly, storybook-style images that accompany each scene.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b7682685-7c63-4cd2-82e1-31ce5d215810) and start prompting.
+Strict guard rails ensure all content is safe and appropriate for the target audience.
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## Features
+- **Story World & Theme Selection:** Easily choose your adventure’s setting and narrative theme.
+- **Character Creation Interface:** Input names and traits to create memorable characters.
+- **Scene Generation:** Watch as each scene comes to life with AI-generated text and images.
+- **Live Preview & Regeneration:** Review each scene and regenerate content if needed.
+- **Secure OpenAI API Integration:** Enter your API key securely to power text and image generation.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Screenshots
 
-Follow these steps:
+Here are some screenshots showcasing the application in action. All images are hosted in the [screenshots directory](https://github.com/jayrosen-design/choose-your-adventure-ai/blob/main/screenshots/):
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. **Main Landing Page**  
+   ![Landing Page](screenshots/screencapture-choose-your-adventure-ai-lovable-app-2025-03-05-15_03_53.png)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2. **API Key Prompt**  
+   ![API Key Prompt](screenshots/screencapture-choose-your-adventure-ai-lovable-app-2025-03-05-15_04_18.png)
 
-# Step 3: Install the necessary dependencies.
-npm i
+3. **Story World Selection**  
+   ![Story World Selection](screenshots/screencapture-choose-your-adventure-ai-lovable-app-2025-03-05-15_04_35.png)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+4. **Theme Selection**  
+   ![Theme Selection](screenshots/screencapture-choose-your-adventure-ai-lovable-app-2025-03-05-15_05_29.png)
 
-**Edit a file directly in GitHub**
+5. **Character Creation Screen**  
+   ![Character Creation](screenshots/screencapture-choose-your-adventure-ai-lovable-app-2025-03-05-15_05_51.png)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+6. **Scene Generation (Text & Image)**  
+   ![Generated Scene](screenshots/screencapture-choose-your-adventure-ai-lovable-app-2025-03-05-15_06_11.png)
 
-**Use GitHub Codespaces**
+7. **Additional Scene Preview**  
+   ![Scene Preview](screenshots/screencapture-choose-your-adventure-ai-lovable-app-2025-03-05-15_06_38.png)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+8. **Final Story Scene**  
+   ![Final Scene](screenshots/screencapture-choose-your-adventure-ai-lovable-app-2025-03-05-15_07_04.png)
 
-## What technologies are used for this project?
+---
 
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/b7682685-7c63-4cd2-82e1-31ce5d215810) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
