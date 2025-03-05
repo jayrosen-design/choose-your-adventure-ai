@@ -1,11 +1,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Lock, Check } from "lucide-react";
 import { useApiKey } from "@/context/ApiKeyContext";
-import { KeyRound, ArrowRight, AlertCircle, Info } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
 
 interface ApiKeyInputProps {
   onContinue: () => void;
@@ -13,20 +13,30 @@ interface ApiKeyInputProps {
 
 const ApiKeyInput = ({ onContinue }: ApiKeyInputProps) => {
   const { apiKey, setApiKey, isApiKeySet } = useApiKey();
-  const [inputKey, setInputKey] = useState(apiKey);
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inputKey.trim().length > 0) {
-      // Remove any leading "hf_" if the user already included it
-      // (Since we add it in the openai.ts file)
-      const cleanKey = inputKey.trim().startsWith("hf_") 
-        ? inputKey.trim() 
-        : inputKey.trim();
-      
-      setApiKey(cleanKey);
-      onContinue();
+  const [inputValue, setInputValue] = useState(apiKey);
+  const [isValidating, setIsValidating] = useState(false);
+
+  const validateAndSetKey = async () => {
+    if (!inputValue.trim()) {
+      toast.error("Please enter your OpenAI API key");
+      return;
     }
+    
+    if (!inputValue.startsWith("sk-") || inputValue.length < 30) {
+      toast.error("Invalid API key format. OpenAI keys start with 'sk-'");
+      return;
+    }
+
+    setIsValidating(true);
+    
+    // Simple validation - in a real app you might want to test the key
+    // by making a minimal API call
+    setTimeout(() => {
+      setApiKey(inputValue.trim());
+      setIsValidating(false);
+      toast.success("API key saved for this session");
+      onContinue();
+    }, 500);
   };
 
   return (
@@ -38,50 +48,49 @@ const ApiKeyInput = ({ onContinue }: ApiKeyInputProps) => {
     >
       <div className="glass p-8 rounded-xl">
         <div className="text-center mb-6">
-          <KeyRound className="h-12 w-12 text-primary mx-auto mb-2" />
-          <h2 className="text-2xl font-bold">HuggingFace Access Token</h2>
-          <p className="text-muted-foreground mt-1">
-            Enter your HuggingFace access token to generate story illustrations
+          <Lock className="w-12 h-12 text-primary mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Enter your OpenAI API Key</h2>
+          <p className="text-muted-foreground">
+            Your API key will be used to generate images for your story.
+            It's stored only in your browser during this session.
           </p>
         </div>
 
-        <Alert className="mb-6 bg-yellow-50 border-yellow-200">
-          <AlertCircle className="h-4 w-4 text-yellow-600" />
-          <AlertDescription className="text-yellow-600">
-            Your token is stored locally in your browser and is never sent to our servers.
-          </AlertDescription>
-        </Alert>
-
-        <Alert className="mb-6 bg-blue-50 border-blue-200">
-          <Info className="h-4 w-4 text-blue-600" />
-          <AlertDescription className="text-blue-600">
-            The token should start with "hf_". If you don't include it, we'll add it automatically.
-          </AlertDescription>
-        </Alert>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-4">
           <div>
+            <label htmlFor="apiKey" className="block text-sm font-medium mb-1">
+              OpenAI API Key
+            </label>
             <Input
+              id="apiKey"
               type="password"
-              placeholder="Enter your HuggingFace access token"
-              value={inputKey}
-              onChange={(e) => setInputKey(e.target.value)}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="sk-..."
               className="w-full"
+              autoComplete="off"
             />
             <p className="text-xs text-muted-foreground mt-1">
-              Don't have a token? <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                Get one from HuggingFace
-              </a>
+              Your key stays in your browser and is never sent to our servers.
             </p>
           </div>
-          <Button 
-            type="submit" 
-            className="w-full bg-primary hover:bg-primary/90"
-            disabled={inputKey.trim().length === 0}
+
+          <Button
+            onClick={validateAndSetKey}
+            className="w-full btn-primary"
+            disabled={isValidating || !inputValue.trim()}
           >
-            Continue <ArrowRight className="ml-2 h-4 w-4" />
+            {isValidating ? (
+              "Validating..."
+            ) : isApiKeySet ? (
+              <>
+                <Check className="mr-2 h-4 w-4" /> Continue
+              </>
+            ) : (
+              "Save & Continue"
+            )}
           </Button>
-        </form>
+        </div>
       </div>
     </motion.div>
   );
