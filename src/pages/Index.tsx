@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import StoryHeader from "@/components/StoryHeader";
 import EnvironmentSelector from "@/components/EnvironmentSelector";
 import ThemeSelector from "@/components/ThemeSelector";
@@ -14,6 +14,7 @@ import { Sparkles } from "lucide-react";
 
 const StoryCreator = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const [showApiKeyModal, setShowApiKeyModal] = useState<boolean>(false);
   const [storyDetails, setStoryDetails] = useState<StoryDetails>({
     environment: null,
     theme: null,
@@ -34,6 +35,13 @@ const StoryCreator = () => {
   };
 
   const goToNextStep = () => {
+    // If we're moving to the final step (preview) and API key isn't set,
+    // prompt the user to set it first
+    if (currentStep === 4 && !isApiKeySet) {
+      setShowApiKeyModal(true);
+      return;
+    }
+    
     setCurrentStep(currentStep + 1);
     window.scrollTo(0, 0);
   };
@@ -59,15 +67,8 @@ const StoryCreator = () => {
   };
 
   const renderStep = () => {
-    // If API key is not set, show the API key input first
-    if (!isApiKeySet) {
-      return <ApiKeyInput onContinue={() => setCurrentStep(2)} />;
-    }
-
     switch (currentStep) {
       case 1:
-        return <ApiKeyInput onContinue={() => setCurrentStep(2)} />;
-      case 2:
         return (
           <EnvironmentSelector
             environments={environments}
@@ -75,7 +76,7 @@ const StoryCreator = () => {
             onContinue={goToNextStep}
           />
         );
-      case 3:
+      case 2:
         return (
           <ThemeSelector
             themes={themes}
@@ -84,7 +85,7 @@ const StoryCreator = () => {
             onBack={goToPreviousStep}
           />
         );
-      case 4:
+      case 3:
         return (
           <CharacterCreator
             onUpdate={handleCharactersUpdate}
@@ -92,7 +93,7 @@ const StoryCreator = () => {
             onBack={goToPreviousStep}
           />
         );
-      case 5:
+      case 4:
         if (storyDetails.environment && storyDetails.theme) {
           const validCharacters = storyDetails.characters.filter(
             (char) => char.name && char.personality && char.traits.length > 0
@@ -116,12 +117,35 @@ const StoryCreator = () => {
 
   return (
     <div className="min-h-screen bg-background bg-hero-pattern py-8 px-4 overflow-hidden">
-      {currentStep < 6 ? (
+      {currentStep < 5 ? (
         <>
-          <StoryHeader currentStep={currentStep} totalSteps={5} />
+          <StoryHeader 
+            currentStep={currentStep} 
+            totalSteps={4} 
+            onOpenApiKeyModal={() => setShowApiKeyModal(true)} 
+          />
+          
           <AnimatePresence mode="wait">
             {renderStep()}
           </AnimatePresence>
+          
+          {/* API Key Modal */}
+          {showApiKeyModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <ApiKeyInput 
+                isModal={true}
+                onClose={() => setShowApiKeyModal(false)} 
+                onContinue={() => {
+                  setShowApiKeyModal(false);
+                  // If we were trying to go to preview, continue to it
+                  if (currentStep === 4) {
+                    setCurrentStep(currentStep + 1);
+                    window.scrollTo(0, 0);
+                  }
+                }}
+              />
+            </div>
+          )}
         </>
       ) : (
         <div className="flex flex-col items-center justify-center min-h-[80vh]">

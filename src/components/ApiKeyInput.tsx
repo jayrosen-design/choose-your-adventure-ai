@@ -3,15 +3,17 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Lock, Check } from "lucide-react";
+import { Lock, Check, X } from "lucide-react";
 import { useApiKey } from "@/context/ApiKeyContext";
 import { toast } from "sonner";
 
 interface ApiKeyInputProps {
-  onContinue: () => void;
+  onContinue?: () => void;
+  onClose?: () => void;
+  isModal?: boolean;
 }
 
-const ApiKeyInput = ({ onContinue }: ApiKeyInputProps) => {
+const ApiKeyInput = ({ onContinue, onClose, isModal = false }: ApiKeyInputProps) => {
   const { apiKey, setApiKey, isApiKeySet } = useApiKey();
   const [inputValue, setInputValue] = useState(apiKey);
   const [isValidating, setIsValidating] = useState(false);
@@ -35,7 +37,7 @@ const ApiKeyInput = ({ onContinue }: ApiKeyInputProps) => {
       setApiKey(inputValue.trim());
       setIsValidating(false);
       toast.success("API key saved for this session");
-      onContinue();
+      if (onContinue) onContinue();
     }, 500);
   };
 
@@ -44,9 +46,19 @@ const ApiKeyInput = ({ onContinue }: ApiKeyInputProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="w-full max-w-xl mx-auto"
+      className={`${isModal ? "w-full max-w-xl" : "w-full max-w-xl mx-auto"}`}
     >
-      <div className="glass p-8 rounded-xl">
+      <div className="glass p-8 rounded-xl relative">
+        {isModal && onClose && (
+          <button 
+            onClick={onClose}
+            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+            aria-label="Close"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
+        
         <div className="text-center mb-6">
           <Lock className="w-12 h-12 text-primary mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2">Enter your OpenAI API Key</h2>
